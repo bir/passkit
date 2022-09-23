@@ -72,7 +72,8 @@ func LoadSigningInformationFromBytes(pkcs12KeyStoreFile []byte, keyStorePassword
 
 // verify checks if a certificate has expired
 func verify(cert *x509.Certificate) error {
-	_, err := cert.Verify(x509.VerifyOptions{})
+	// Using an empty certpool bypasses the OS level checking of the certs.  It still enforces expiration checks.
+	_, err := cert.Verify(x509.VerifyOptions{Roots: x509.NewCertPool()})
 	if err == nil {
 		return nil
 	}
